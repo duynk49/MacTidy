@@ -244,7 +244,61 @@ fn render_system_junk_tab(frame: &mut Frame, app: &App, area: Rect) {
     if let Some(selected_cat) = app.categories.get(app.selected_category_idx) {
         let right_title = format!(" Details: {} ", selected_cat.name);
 
-        let sub_items_render: Vec<ListItem> = if selected_cat.sub_items.is_empty() {
+        let sub_items_render: Vec<ListItem> = if selected_cat.status == ScanStatus::PermissionDenied {
+            vec![
+                ListItem::new(Line::from(vec![Span::styled(
+                    " ⚠️  Permission Denied (macOS TCC)",
+                    Style::default().fg(Color::LightRed).add_modifier(Modifier::BOLD),
+                )])),
+                ListItem::new(Line::raw("")),
+                ListItem::new(Line::from(vec![Span::styled(
+                    " macOS requires Full Disk Access (FDA) to",
+                    Style::default().fg(Color::Yellow),
+                )])),
+                ListItem::new(Line::from(vec![Span::styled(
+                    " read this protected system directory.",
+                    Style::default().fg(Color::Yellow),
+                )])),
+                ListItem::new(Line::raw("")),
+                ListItem::new(Line::from(vec![Span::styled(
+                    " 💡 How to grant permission:",
+                    Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                )])),
+                ListItem::new(Line::from(vec![Span::styled(
+                    "  1. Open System Settings -> Privacy & Security",
+                    Style::default().fg(Color::Cyan),
+                )])),
+                ListItem::new(Line::from(vec![Span::styled(
+                    "  2. Click 'Full Disk Access'",
+                    Style::default().fg(Color::Cyan),
+                )])),
+                ListItem::new(Line::from(vec![Span::styled(
+                    "  3. Toggle ON for your Terminal / IDE app",
+                    Style::default().fg(Color::Cyan),
+                )])),
+                ListItem::new(Line::from(vec![Span::styled(
+                    "  4. Restart Terminal and press 'r' to rescan",
+                    Style::default().fg(Color::Green),
+                )])),
+            ]
+        } else if let ScanStatus::Error(ref err) = selected_cat.status {
+            vec![
+                ListItem::new(Line::from(vec![Span::styled(
+                    " ⚠️  Scan Error",
+                    Style::default().fg(Color::Red).add_modifier(Modifier::BOLD),
+                )])),
+                ListItem::new(Line::raw("")),
+                ListItem::new(Line::from(vec![Span::styled(
+                    format!(" {}", err),
+                    Style::default().fg(Color::DarkGray),
+                )])),
+            ]
+        } else if selected_cat.status == ScanStatus::NotFound {
+            vec![ListItem::new(Line::from(vec![Span::styled(
+                " (Directory does not exist)",
+                Style::default().fg(Color::DarkGray),
+            )]))]
+        } else if selected_cat.sub_items.is_empty() {
             vec![ListItem::new(Line::from(vec![Span::styled(
                 " (No items found or folder is empty)",
                 Style::default().fg(Color::DarkGray),

@@ -95,3 +95,13 @@ Or build an optimized release binary:
 cargo build --release
 ./target/release/MacTidy
 ```
+
+### 🔒 macOS Permissions (Full Disk Access)
+Certain system directories such as **Trash Bin** (`~/.Trash`) and **iOS Device Backups** (`~/Library/Application Support/MobileSync/Backup`) are protected by macOS **TCC (Transparency, Consent, and Control)**. If your terminal does not have Full Disk Access, MacTidy will mark them as `Permission Denied`.
+
+To grant access:
+1. Open **System Settings** (Cài đặt hệ thống) → **Privacy & Security** (Quyền riêng tư & Bảo mật).
+2. Select **Full Disk Access** (Quyền truy cập toàn bộ đĩa).
+3. Enable the toggle for your terminal application (e.g., **Terminal**, **iTerm2**, **Warp**, **VS Code**, or **Cursor**).
+4. Restart your terminal application and re-run MacTidy (or press `r` to rescan).
+
